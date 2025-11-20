@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      NO_WATCHER: true
+      FLUTTER_SUPPRESS_ANALYTICS: true
+      FLUTTER_WEB_AUTOMATICALLY_WATCH: false
 
     steps:
       - uses: actions/checkout@v4
@@ -29,13 +33,10 @@ jobs:
           rm -rf ~/.gradle/caches ~/.gradle/daemon ~/.gradle/native ~/.gradle/wrapper
           flutter pub get
 
-      - name: Build APK headless
+      - name: Build APK
         run: |
-          echo "Disabling watchers for CI"
-          export NO_WATCHER=true
-          export FLUTTER_SUPPRESS_ANALYTICS=true
-          export FLUTTER_WEB_AUTOMATICALLY_WATCH=false
-          flutter build apk --release --no-track-widget-creation --no-tree-shake-icons --no-build-cache --no-sound-null-safety
+          echo "Building APK with watchers disabled"
+          flutter build apk --release --no-track-widget-creation --no-tree-shake-icons
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
