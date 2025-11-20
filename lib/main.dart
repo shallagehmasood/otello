@@ -146,9 +146,7 @@ class _LocationChatPageState extends State<LocationChatPage> {
                     flex: 2,
                     child: FlutterMap(
                       mapController: _mapController,
-                      options: MapOptions(
-                        interactiveFlags: InteractiveFlag.all,
-                      ),
+                      options: const MapOptions(), // هیچ پارامتر نامگذاری شده‌ای
                       children: [
                         TileLayer(
                           urlTemplate:
