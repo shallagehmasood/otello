@@ -41,11 +41,13 @@ class _LocationChatPageState extends State<LocationChatPage> {
   Map<String, Color> userColors = {};
   List<String> onlineUsers = [];
 
+  // MapController برای کنترل زوم و موقعیت
+  final MapController _mapController = MapController();
+
   Future<void> _startApp() async {
     myName = _nameController.text.trim();
     if (myName!.isEmpty) return;
 
-    // انتخاب رنگ تصادفی برای هر کاربر
     myColor = Colors.primaries[Random().nextInt(Colors.primaries.length)];
 
     channel = IOWebSocketChannel.connect("ws://178.63.171.244:5000");
@@ -144,9 +146,11 @@ class _LocationChatPageState extends State<LocationChatPage> {
                   Expanded(
                     flex: 2,
                     child: FlutterMap(
+                      mapController: _mapController,
                       options: MapOptions(
-                        initialCenter: LatLng(32.0, 53.0),
+                        center: LatLng(32.0, 53.0),
                         zoom: 6.0,
+                        interactiveFlags: InteractiveFlag.all,
                       ),
                       children: [
                         TileLayer(
