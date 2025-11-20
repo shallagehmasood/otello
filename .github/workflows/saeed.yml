@@ -9,6 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      NO_WATCHER: true
+      FLUTTER_SUPPRESS_ANALYTICS: true
+      FLUTTER_WEB_AUTOMATICALLY_WATCH: false
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -37,8 +42,10 @@ jobs:
           rm -rf ~/.pub-cache/hosted/pub.dev/geolocator_android-*
           flutter pub get
 
-      - name: Build release APK
-        run: flutter build apk --release
+      - name: Build release APK (no watcher)
+        run: |
+          echo "Building APK..."
+          flutter build apk --release --no-track-widget-creation --no-tree-shake-icons
 
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
