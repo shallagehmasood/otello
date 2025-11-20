@@ -41,7 +41,6 @@ class _LocationChatPageState extends State<LocationChatPage> {
   Map<String, Color> userColors = {};
   List<String> onlineUsers = [];
 
-  // MapController برای کنترل زوم و موقعیت
   final MapController _mapController = MapController();
 
   Future<void> _startApp() async {
@@ -148,8 +147,6 @@ class _LocationChatPageState extends State<LocationChatPage> {
                     child: FlutterMap(
                       mapController: _mapController,
                       options: MapOptions(
-                        center: LatLng(32.0, 53.0),
-                        zoom: 6.0,
                         interactiveFlags: InteractiveFlag.all,
                       ),
                       children: [
@@ -237,5 +234,14 @@ class _LocationChatPageState extends State<LocationChatPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // تنظیم موقعیت و زوم اولیه پس از رندر صفحه
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _mapController.move(LatLng(32.0, 53.0), 6.0);
+    });
   }
 }
