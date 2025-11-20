@@ -1,5 +1,5 @@
 name: Build Release APK for alert_x
- 
+
 on:
   push:
     branches: [ "chat" ]
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.35.7'
           channel: 'stable'
 
       - name: Set up Java
@@ -33,6 +33,8 @@ jobs:
           rm -rf ~/.gradle/daemon
           rm -rf ~/.gradle/native
           rm -rf ~/.gradle/wrapper
+          echo "پاکسازی نسخه‌های قدیمی geolocator_android"
+          rm -rf ~/.pub-cache/hosted/pub.dev/geolocator_android-*
           flutter pub get
 
       - name: Build release APK
