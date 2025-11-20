@@ -1,4 +1,4 @@
-name: Build Release APK for alert_x
+name: Build Release APK (Docker Flutter)
 
 on:
   push:
@@ -8,37 +8,40 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      NO_WATCHER: true
-      FLUTTER_SUPPRESS_ANALYTICS: true
-      FLUTTER_WEB_AUTOMATICALLY_WATCH: false
+    container:
+      image: cirrusci/flutter:stable   # یا cirrusci/flutter:3.35.7 اگر موجود باشه
+      options: --user root
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.35.7'
-          channel: 'stable'
-
-      - uses: actions/setup-java@v4
+      - name: Setup JDK (needed for Gradle)
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
 
-      - name: Clean and pub get
+      - name: Show Flutter
+        run: flutter --version
+
+      - name: Get deps and clean
         run: |
-          flutter clean
-          rm -rf ~/.gradle/caches ~/.gradle/daemon ~/.gradle/native ~/.gradle/wrapper
           flutter pub get
+          flutter clean
 
-      - name: Build APK
+      - name: Build release APK
         run: |
-          echo "Building APK with watchers disabled"
+          # explicit env just in case
+          export FLUTTER_SUPPRESS_ANALYTICS=true
           flutter build apk --release --no-track-widget-creation --no-tree-shake-icons
 
-      - name: Upload APK
+      - name: List build outputs (debug)
+        run: |
+          find build -maxdepth 4 -type f -name "*.apk" -print || true
+          ls -la build/app/outputs/flutter-apk || true
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: alert_x-release-apk
