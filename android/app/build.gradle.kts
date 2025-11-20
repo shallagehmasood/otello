@@ -7,16 +7,17 @@ plugins {
 
 android {
     namespace = "ir.masoodfx.alertx"
-    compileSdk = 35
-    ndkVersion = "27.0.12077973"
+    compileSdk = 36       // ارتقا به SDK 36
 
     defaultConfig {
         applicationId = "ir.masoodfx.alertx"
         minSdk = 21
-        targetSdk = 35
+        targetSdk = 36   // ارتقا به SDK 36
         versionCode = 1
         versionName = "1.0"
     }
+
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -34,6 +35,11 @@ android {
             isShrinkResources = true
             proguardFiles("proguard-android.txt")
         }
+    }
+
+    // اجازه می‌دهد همه پلاگین‌ها به درستی با Gradle جدید کار کنند
+    buildFeatures {
+        compose = false
     }
 }
 
