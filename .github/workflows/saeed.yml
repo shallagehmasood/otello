@@ -1,4 +1,4 @@
-name: Build Release APK (Docker Flutter)
+name: Build Release APK with Docker for alert_x
 
 on:
   push:
@@ -9,36 +9,44 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: cirrusci/flutter:stable   # یا cirrusci/flutter:3.35.7 اگر موجود باشه
+      image: cirrusci/flutter:3.35.7  # شامل Dart 3.9
       options: --user root
 
+    env:
+      FLUTTER_SUPPRESS_ANALYTICS: true
+      NO_WATCHER: true
+      FLUTTER_WEB_AUTOMATICALLY_WATCH: false
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup JDK (needed for Gradle)
+      - name: Setup Java (Gradle)
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'gradle'
 
-      - name: Show Flutter
-        run: flutter --version
-
-      - name: Get deps and clean
+      - name: Show Flutter and Dart version
         run: |
-          flutter pub get
+          flutter --version
+          dart --version
+
+      - name: Clean & Get Dependencies
+        run: |
           flutter clean
+          flutter pub get
 
-      - name: Build release APK
+      - name: Build Release APK
         run: |
-          # explicit env just in case
-          export FLUTTER_SUPPRESS_ANALYTICS=true
+          echo "Building release APK inside Docker container..."
           flutter build apk --release --no-track-widget-creation --no-tree-shake-icons
 
-      - name: List build outputs (debug)
+      - name: List build outputs
         run: |
-          find build -maxdepth 4 -type f -name "*.apk" -print || true
+          echo "Listing all APKs generated:"
+          find build -type f -name "*.apk" -print
           ls -la build/app/outputs/flutter-apk || true
 
       - name: Upload APK artifact
