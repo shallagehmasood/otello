@@ -63,7 +63,7 @@ class _LocationChatPageState extends State<LocationChatPage> {
         setState(() {
           userLocations[data["name"]] = LatLng(data["lat"], data["lon"]);
           userColors[data["name"]] =
-              Color(int.parse(data["color"].toString())); // رنگ اختصاصی
+              Color(int.parse(data["color"].toString()));
           onlineUsers = List<String>.from(data["onlineUsers"]);
         });
       }
@@ -94,7 +94,7 @@ class _LocationChatPageState extends State<LocationChatPage> {
         "name": myName,
         "lat": pos.latitude,
         "lon": pos.longitude,
-        "color": myColor!.value, // ارسال رنگ اختصاصی
+        "color": myColor!.value,
       };
       channel!.sink.add(jsonEncode(data));
     });
@@ -145,8 +145,8 @@ class _LocationChatPageState extends State<LocationChatPage> {
                     flex: 2,
                     child: FlutterMap(
                       options: MapOptions(
-                        center: LatLng(32.0, 53.0),
-                        zoom: 6,
+                        initialCenter: LatLng(32.0, 53.0),
+                        zoom: 6.0,
                       ),
                       children: [
                         TileLayer(
@@ -156,13 +156,12 @@ class _LocationChatPageState extends State<LocationChatPage> {
                         ),
                         MarkerLayer(
                           markers: userLocations.entries.map((entry) {
-                            final color =
-                                userColors[entry.key] ?? Colors.red;
+                            final color = userColors[entry.key] ?? Colors.red;
                             return Marker(
+                              point: entry.value,
                               width: 40,
                               height: 40,
-                              point: entry.value,
-                              builder: (ctx) => Icon(
+                              child: Icon(
                                 Icons.location_on,
                                 color: color,
                                 size: 30,
@@ -177,15 +176,16 @@ class _LocationChatPageState extends State<LocationChatPage> {
                     flex: 1,
                     child: Column(
                       children: [
-                        Text("کاربران آنلاین",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                        const Text(
+                          "کاربران آنلاین",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         Expanded(
                           child: ListView.builder(
                             itemCount: onlineUsers.length,
                             itemBuilder: (context, index) {
                               final name = onlineUsers[index];
-                              final color =
-                                  userColors[name] ?? Colors.grey;
+                              final color = userColors[name] ?? Colors.grey;
                               return ListTile(
                                 leading: CircleAvatar(
                                   backgroundColor: color,
